@@ -3,4 +3,4 @@
 This will be a open world game similar to Pokemon.
 
 * Tech stack (95% Javascript, CSS, HTML)
-LinkedInProPic.png
+![Slide 1](LinkedInProPic.png)
