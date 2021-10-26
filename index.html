@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="style.css" rel="stylesheet"></link>
+  <title>Pokemon Fenton Region</title>
+</head>
+<body>
+  <!-- <img id="test" src="lugia4.png" alt="Pokemon"> -->
+  <header id="header">
+    <div id="pikaPosition">Pikachu Position: </div>
+    <button id="leftBtn">Left</button>
+    <button id="rightBtn">Right</button>
+  </header>
+
+  <!-- This is the part that will transition for battle -->
+  <main id="main">
+    <div id="roamView">
+      <canvas id="canvas"><!-- play it, a game --></canvas>
+    </div>
+    
+    <div id="battleView">
+      <div class="corners" id="opponentCorner">
+      <div id="enemyHealth">Lugia Health:
+        <progress id="eHealthBar" value="80" max="100"></progress>
+      </div>
+        <img src="lugia4.png" alt="Pokemon">
+        <!-- <div id="opponentImage"></div> -->
+      </div>
+      <div class="corners" id="playerCorner">
+        <img src="battlePikachu.png" alt="Pikachu">
+      </div>
+      <div id="battleWords">
+        <h1 id="turnIndicator">Pikachu's turn</h1>
+        <h2>Do you want to attack or heal?</h2>
+        <h1><span id="AAttack" class='selected'>(A)Attack</span> <span id="DHeal">(D)Heal</span></h1>
+      </div>
+    </div>
+  </main>
+
+  <!-- 'position: sticky' Health bar -->
+  <div id="pikaHealth">Pika Health:
+    <progress id="healthbar" value="80" max="100"></progress>
+  </div>
+  
+  <script src="functions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
