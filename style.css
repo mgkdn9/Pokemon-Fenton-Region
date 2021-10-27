@@ -63,14 +63,14 @@ canvas {
   font-size: 1.5rem;
 }
 
-#eHealthBar::-webkit-progress-value {background: red; }
+/* #eHealthBar::-webkit-progress-value {background: red; }  NO WORKY? */
 
 #opponentCorner>img {
-/* img { */
   width: 300px;
   position: absolute;
   right: 0;
   background: transparent;
+  transform: translateY(-15%);
 }
 #opponentImage {
   background-image: url("lugia4.png");
@@ -85,6 +85,7 @@ canvas {
 #playerCorner>img {
   width: 300px;
   background: white;
+  background: transparent;
 }
 #battleWords {
   grid-column: 2/3;
@@ -92,11 +93,15 @@ canvas {
   background-color: #666;
   text-align: center;
 }
+#turnDescription {
+  height: 100px;
+  font-size: 1.5rem;
+  padding: 10px;
+}
 .selected {
   border: 2px solid black;
   font-weight: bold;
 }
-
 #pikaHealth {
   position: sticky;
   bottom: 0;

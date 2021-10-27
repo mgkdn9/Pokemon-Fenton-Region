@@ -8,11 +8,8 @@
   <title>Pokemon Fenton Region</title>
 </head>
 <body>
-  <!-- <img id="test" src="lugia4.png" alt="Pokemon"> -->
   <header id="header">
     <div id="pikaPosition">Pikachu Position: </div>
-    <button id="leftBtn">Left</button>
-    <button id="rightBtn">Right</button>
   </header>
 
   <!-- This is the part that will transition for battle -->
@@ -26,26 +23,27 @@
       <div id="enemyHealth">Lugia Health:
         <progress id="eHealthBar" value="80" max="100"></progress>
       </div>
-        <img src="lugia4.png" alt="Pokemon">
-        <!-- <div id="opponentImage"></div> -->
+        <img src="lugia.png" alt="Pokemon">
       </div>
       <div class="corners" id="playerCorner">
         <img src="battlePikachu.png" alt="Pikachu">
       </div>
       <div id="battleWords">
+        <div id="turnDescription">Lugia appeared!</div>
         <h1 id="turnIndicator">Pikachu's turn</h1>
         <h2>Do you want to attack or heal?</h2>
         <h1><span id="AAttack" class='selected'>(A)Attack</span> <span id="DHeal">(D)Heal</span></h1>
+        <h2 id="pressEnter">Press Enter to Attack!</h2>
       </div>
     </div>
   </main>
 
   <!-- 'position: sticky' Health bar -->
   <div id="pikaHealth">Pika Health:
-    <progress id="healthbar" value="80" max="100"></progress>
+    <progress id="healthbar" value="100" max="100"></progress>
   </div>
-  
-  <script src="functions.js"></script>
+
+  <!-- <script src="functions.js"></script> -->
   <script src="app.js"></script>
 </body>
 </html>
