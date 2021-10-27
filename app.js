@@ -5,13 +5,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   const eHealthBar = document.getElementById('eHealthBar')
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
-  //let attackSelected = true //true=>battler has selected Attack, false=> has not selected Attack
-  //let healSelected = false //false=>battler has selected Heal, true=> has not selected Heal
-  const playerAttackStat = 4
-  const playerHealStat = 6
+  const playerAttackStat = 40
+  const playerHealStat = 60
   const enemyAttackStat = 2
   const enemyHealStat = 3
   const eName = 'Lugia'
+  let winNumber = 0
 
   // -------------------------------------- FUNCTIONS --------------------------------------
   // obj capable of moving around canvas
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     this.color = color
     this.height = height
     this.width = width
-    this.alive = true
     // then to define our 'render' method
     this.render = function() {
       ctx.fillStyle = this.color
@@ -93,6 +91,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   // End battle
   function endBattle(){
     battlePhase = false
+    winNumber++
+    winCounter.innerText = winNumber
     viewChange()
   }
 
@@ -114,8 +114,13 @@ document.addEventListener('DOMContentLoaded',()=>{
           case true:  // Player's turn
             if(attackSelected){// They have Attack selected and hit enter
               if(Math.random()<0.9){// Attacks have 90% accuracy
-                turnDescription.innerText = "Pikachu's attack landed!"
-                eHealthBar.value -= playerAttackStat
+                if(Math.random()<0.1){// Attacks have 10% critical hit rate
+                  turnDescription.innerText = "Critical Hit!!!"
+                  eHealthBar.value -= playerAttackStat*10
+                } else {
+                  turnDescription.innerText = "Pikachu's attack landed!"
+                  eHealthBar.value -= playerAttackStat
+                }
                 if(eHealthBar.value<=0){
                   turnDescription.innerText = eName+" ran out of health..."
                   setTimeout(endBattle,1000)
@@ -135,8 +140,13 @@ document.addEventListener('DOMContentLoaded',()=>{
           case false:  // Enemy's turn
           if(attackSelected){// They have Attack selected and hit enter
             if(Math.random()<0.9){// Attacks have 90% accuracy
-              turnDescription.innerText = eName+"'s attack landed!"
-              healthBar.value -= enemyAttackStat
+              if(Math.random()<0.1){// Attacks have 10% critical hit rate
+                turnDescription.innerText = "Critical Hit!!!"
+                healthBar.value -= enemyAttackStat*10
+              } else {
+                turnDescription.innerText = eName+"'s attack landed!"
+                healthBar.value -= enemyAttackStat
+              }
               if(healthBar.value<=0){
                 turnDescription.innerText = "Pikachu ran out of health..."
                 turnIndicator.innerText = "GAME OVER"
