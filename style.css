@@ -98,6 +98,10 @@ canvas {
   font-size: 1.5rem;
   padding: 10px;
 }
+#AAttack, #DHeal {
+  padding: 5px;
+  font-size: 2rem;
+}
 .selected {
   border: 2px solid black;
   font-weight: bold;

@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
   const ctx = canvas.getContext('2d')
-  const healthBar = document.getElementById('healthbar')
+  let healthBar = document.getElementById('healthbar')
   const eHealthBar = document.getElementById('eHealthBar')
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
-  let attackSelected = true //true=>battler has selected Attack, false=> has not selected Attack
-  let healSelected = false //false=>battler has selected Heal, true=> has not selected Heal
+  //let attackSelected = true //true=>battler has selected Attack, false=> has not selected Attack
+  //let healSelected = false //false=>battler has selected Heal, true=> has not selected Heal
   const playerAttackStat = 4
   const playerHealStat = 6
   const enemyAttackStat = 2
@@ -31,19 +31,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // move player around PlayerMovementArea
   function movementHandler(event){
-    switch (event.key.toLowerCase()) {
-      case'w': // W key
-        pikachu.y -= 10//move up 10
-        break
-      case'a': // A key
-        pikachu.x -= 10//move left 10
-        break
-      case's': // S key
-        pikachu.y += 10//move down 10
-        break
-      case'd': // D key
-        pikachu.x += 10//move right 10
-        break
+    if(!battlePhase){
+      switch (event.key.toLowerCase()) {
+        case'w': // W key
+          pikachu.y -= 10//move up 10
+          break
+        case'a': // A key
+          pikachu.x -= 10//move left 10
+          break
+        case's': // S key
+          pikachu.y += 10//move down 10
+          break
+        case'd': // D key
+          pikachu.x += 10//move right 10
+          break
+      }
     }
   }
 
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   // When battle starts, slide roamView offscreen to show battleView
-  function onViewChange(evt) {
+  function viewChange(evt) {
     main.classList.toggle('view-change');
   }
 
@@ -83,41 +85,77 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Start battle
   function startBattle(){
     battlePhase = true
-    onViewChange()
-    // eHealthBar.value = 100
+    viewChange()
+    eHealthBar.value = 100
+    turnDescription.innerText = eName+' appeared!'
+    pikaTurn = true
+  }
+  // End battle
+  function endBattle(){
+    battlePhase = false
+    viewChange()
   }
 
   // Take turn in battle
   function takeTurn(event){
-    if(battlePhase && event.key==='Enter'){
-      switch(pikaTurn){
-        case true:  // Player's turn
+    if(battlePhase){
+      const attackSelected = AAttack.classList.contains('selected')
+      const healSelected = DHeal.classList.contains('selected')
+      if(event.key==='a'){
+        AAttack.classList.add('selected')
+        DHeal.classList.remove('selected')
+      }
+      else if(event.key==='d'){
+        DHeal.classList.add('selected')
+        AAttack.classList.remove('selected')
+      }
+      else if(event.key==='Enter' && (attackSelected || healSelected)){
+        switch(pikaTurn){
+          case true:  // Player's turn
+            if(attackSelected){// They have Attack selected and hit enter
+              if(Math.random()<0.9){// Attacks have 90% accuracy
+                turnDescription.innerText = "Pikachu's attack landed!"
+                eHealthBar.value -= playerAttackStat
+                if(eHealthBar.value<=0){
+                  turnDescription.innerText = eName+" ran out of health..."
+                  setTimeout(endBattle,1000)
+                } else {
+                  turnIndicator.innerText = eName+"'s turn"
+                }
+              } else {
+                turnDescription.innerText = "Pikachu's attack missed!!!"
+                turnIndicator.innerText = eName+"'s turn"
+              }
+            } else if(healSelected){
+              healthBar.value += playerHealStat
+              turnDescription.innerText = "Pikachu healed!"
+              turnIndicator.innerText = eName+"'s turn"
+            }
+            break
+          case false:  // Enemy's turn
           if(attackSelected){// They have Attack selected and hit enter
             if(Math.random()<0.9){// Attacks have 90% accuracy
-              eHealthBar.value -= playerAttackStat
-              turnDescription.innerText = "Pikachu's attack landed!"
+              turnDescription.innerText = eName+"'s attack landed!"
+              healthBar.value -= enemyAttackStat
+              if(healthBar.value<=0){
+                turnDescription.innerText = "Pikachu ran out of health..."
+                turnIndicator.innerText = "GAME OVER"
+              } else {
+                turnIndicator.innerText = "Pikachu's turn"
+              }
             } else {
-              turnDescription.innerText = "Pikachu's attack missed!!!"
+              turnDescription.innerText = eName+"'s attack missed!!!"
+              turnIndicator.innerText = "Pikachu's turn"
             }
           } else if(healSelected){
-            healthBar += playerHealStat
+            eHealthBar.value += enemyHealStat
+            turnDescription.innerText = eName+" healed!"
+            turnIndicator.innerText = "Pikachu's turn"
           }
-          if(eHealthBar.value<=0){
-            turnDescription.innerText = "Pikachu ran out of health..."
-          } else {
-            turnIndicator.innerText = eName+"'s Turn"
-          }
-          break
-        case false:  // Enemy's turn
-          if(attackSelected){
-            healthBar.value -= enemyAttackStat
-          } else if(healSelected){
-            eHealthBar += enemyHealStat
-          }
-          turnIndicator.innerText = "Pikachu's Turn"
-          break
+            break
+        }
+        pikaTurn = !pikaTurn
       }
-      pikaTurn = !pikaTurn
     }
   }
 
