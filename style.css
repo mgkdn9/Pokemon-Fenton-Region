@@ -37,6 +37,12 @@ canvas {
   transform: translateX(100%);
   display: grid;
   grid-template-columns: 60% auto;
+
+  /* let the browser know we plan to animate
+     each view in and out */
+  will-change: transform;
+
+  transition: transform 0.8s cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
 .view-change #roamView {
   transform: translateX(-100%);

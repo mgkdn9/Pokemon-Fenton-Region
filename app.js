@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     this.color = color
     this.height = height
     this.width = width
-    // this.backgroundImage = 'battlePikachu.png'
+    // this.background = 'battlePikachu.png'
+    this.backgroundImage = ('battlePikachu.png');
     // then to define our 'render' method
     this.render = function() {
       ctx.fillStyle = this.color
@@ -71,7 +72,9 @@ document.addEventListener('DOMContentLoaded',()=>{
         pikachu.y                 <= pC1r1c.y + pC1r1c.height*5 &&
         pikachu.y + pikachu.height>= pC1r1c.y
       ){
-        healthBar.value = healthBar.max
+        healthBar.value = healthBar.max//Reset player health
+        winNumber = 0//Reset Win Total on screen
+        winCounter.innerText = winNumber
       }
     }
   }
@@ -116,6 +119,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     pC5r4c.render()
     pC5r5c.render()
     // render Gary (the final boss)
+    gary.render()
   }
 
   // Check the current position for presense of wild Pokemon
@@ -162,10 +166,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(event.key==='a'){
         AAttack.classList.add('selected')
         DHeal.classList.remove('selected')
+        pressEnter.innerText = '(Press Enter to Attack)'
       }
       else if(event.key==='d'){
         DHeal.classList.add('selected')
         AAttack.classList.remove('selected')
+        pressEnter.innerText = '(Press Enter to Heal)'
       }
       else if(event.key==='Enter' && (attackSelected || healSelected)){
         switch(pikaTurn){
@@ -181,7 +187,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
                 if(eHealthBar.value<=0){
                   turnDescription.innerText = eName+" ran out of health..."
-                  setTimeout(endBattle,1000)
+                  setTimeout(endBattle,1500)
                 } else {
                   turnIndicator.innerText = eName+"'s turn"
                 }
@@ -265,7 +271,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const pC5r4c = new Brick(19, 112, 'red', 3, 3)
   const pC5r5c = new Brick(22, 112, 'red', 3, 3)
   // character representing Gary (final boss)
-  const gary = new Crawler(10.10,'brown',canvas.width/2,canvas.height/2)
+  const gary = new Crawler(canvas.width-20,canvas.height/2,'brown',10,10)
 
   // add event listener for player movement
   document.addEventListener('keydown',movementHandler)
@@ -274,14 +280,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('keydown',pokeCenterHandler)
 
   // Run ftn roamLoop inside setInterval to update playerMovementArea during Roaming
-  const gameInterval = setInterval(roamLoop, 70)
+  const gameInterval = setInterval(roamLoop, 100)
 
   // Initially Pressing 'B' will start battle
   document.addEventListener('keydown',detectAutoBatle)
 
   // State machine for battling
   document.addEventListener('keydown',takeTurn)
-
-  // leftBtn.addEventListener('click', onViewChange)
-  // rightBtn.addEventListener('click', onViewChange, false)
 })
