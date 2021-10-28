@@ -123,6 +123,7 @@ canvas {
 }
 #eOptions {
   width: 280px;
+  text-align: center;
 }
 #AAttack, #DHeal {
   padding: 5px;

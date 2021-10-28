@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   const enemyHealStat = 3
   const eName = 'Lugia'
   let winNumber = 0
+  //true=>battling against AI, false=> player selects enemy moves
+  let aIOn = document.getElementById('aIMode').checked
 
   // -------------------------------------- FUNCTIONS --------------------------------------
   // obj capable of moving around canvas
@@ -149,6 +151,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     pikaTurn = true
     pOptions.classList.add('border')
     eOptions.classList.remove('border')
+    pressEnter.style.display = 'none'
+    ePressEnter.style.display = 'none'
+    DHeal.classList.remove('selected')
+    eDHeal.classList.remove('selected')
+    AAttack.classList.remove('selected')
+    eAAttack.classList.remove('selected')
   }
   // End battle
   function endBattle(){
@@ -168,21 +176,22 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(event.key.toLowerCase()==='a' && pikaTurn){
         AAttack.classList.add('selected')
         DHeal.classList.remove('selected')
+        pressEnter.style.display = 'block'
         pressEnter.innerText = '(Press Enter to Attack)'
-      } else if(event.key.toLowerCase()==='a'){
+      } else if(event.key.toLowerCase()==='a' && !aIOn){
         eAAttack.classList.add('selected')
         eDHeal.classList.remove('selected')
         ePressEnter.innerText = '(Press Enter to Attack)'
       } else if(event.key.toLowerCase()==='d' && pikaTurn){
         DHeal.classList.add('selected')
         AAttack.classList.remove('selected')
+        pressEnter.style.display = 'block'
         pressEnter.innerText = '(Press Enter to Heal)'
-      } else if(event.key.toLowerCase()==='d'){
+      } else if(event.key.toLowerCase()==='d' && !aIOn){
         eDHeal.classList.add('selected')
         eAAttack.classList.remove('selected')
         ePressEnter.innerText = '(Press Enter to Heal)'
-      }
-      else if(event.key==='Enter' &&
+      } else if(event.key==='Enter' &&
       // It wasn't this messy before Thursday....
       (((attackSelected || healSelected) && pikaTurn)
       || ((eAttackSelected || eHealSelected) && !pikaTurn))){
@@ -214,31 +223,16 @@ document.addEventListener('DOMContentLoaded',()=>{
             }
             pressEnter.style.display = 'none'
             ePressEnter.style.display = 'block'
+            // get checkbox value for AI Mode
+            aIOn = document.getElementById('aIMode').checked
+            console.log('aIOn: ',aIOn)
+            if(aIOn){setTimeout(startAITurn,1500)}
             break
           case false:  // Enemy's turn
             if(eAttackSelected){// They have Attack selected and hit enter
-              if(Math.random()<0.9){// Attacks have 90% accuracy
-                if(Math.random()<0.1){// Attacks have 10% critical hit rate
-                  turnDescription.innerText = "Critical Hit!!!"
-                  healthBar.value -= enemyAttackStat*10
-                } else {
-                  turnDescription.innerText = eName+"'s attack landed!"
-                  healthBar.value -= enemyAttackStat
-                }
-                if(healthBar.value<=0){
-                  turnDescription.innerText = "Pikachu ran out of health..."
-                  turnIndicator.innerText = "GAME OVER"
-                } else {
-                  turnIndicator.innerText = "Pikachu's turn"
-                }
-              } else {
-                turnDescription.innerText = eName+"'s attack missed!!!"
-                turnIndicator.innerText = "Pikachu's turn"
-              }
+              eAttack()
             } else if(eHealSelected){
-              eHealthBar.value += enemyHealStat
-              turnDescription.innerText = eName+" healed!"
-              turnIndicator.innerText = "Pikachu's turn"
+              eHeal()
             }
             pressEnter.style.display = 'block'
             ePressEnter.style.display = 'none'
@@ -248,14 +242,71 @@ document.addEventListener('DOMContentLoaded',()=>{
         if(pikaTurn){
           pOptions.classList.add('border')
           eOptions.classList.remove('border')
+          pressEnter.style.display = 'block'
+          ePressEnter.style.display = 'none'
         } else {
           pOptions.classList.remove('border')
           eOptions.classList.add('border')
+          ePressEnter.style.display = 'block'
+          pressEnter.style.display = 'none'
         }
       }
     }
   }
-
+  // Make AI make a move
+  function startAITurn(){
+    console.log('at startAITurn')
+    if(Math.random()<0.7 || eHealthBar.value===eHealthBar.max){//AI will attack 70% of the time when health not full
+      if(eAAttack.classList.contains('selected')){
+        eAttack()
+      } else {
+        setTimeout(()=>{
+          eAAttack.classList.add('selected')
+          eDHeal.classList.remove('selected')
+          eAttack()
+        },500)
+      }
+    } else {//AI will heal 30% of the time
+      if(eDHeal.classList.contains('selected')){
+        eHeal()
+      } else {
+        setTimeout(()=>{
+          eAAttack.classList.remove('selected')
+          eDHeal.classList.add('selected')
+          eHeal()
+        },1500)
+      }
+    }
+    pikaTurn = true
+    pOptions.classList.add('border')
+    eOptions.classList.remove('border')
+    pressEnter.style.display = 'block'
+  }
+  function eAttack(){
+    if(Math.random()<0.9){// Attacks have 90% accuracy
+      if(Math.random()<0.1){// Attacks have 10% critical hit rate
+        turnDescription.innerText = "Critical Hit!!!"
+        healthBar.value -= enemyAttackStat*10
+      } else {
+        turnDescription.innerText = eName+"'s attack landed!"
+        healthBar.value -= enemyAttackStat
+      }
+      if(healthBar.value<=0){
+        turnDescription.innerText = "Pikachu ran out of health..."
+        turnIndicator.innerText = "GAME OVER"
+      } else {
+        turnIndicator.innerText = "Pikachu's turn"
+      }
+    } else {
+      turnDescription.innerText = eName+"'s attack missed!!!"
+      turnIndicator.innerText = "Pikachu's turn"
+    }
+  }
+  function eHeal(){
+    eHealthBar.value += enemyHealStat
+    turnDescription.innerText = eName+" healed!"
+    turnIndicator.innerText = "Pikachu's turn"
+  }
   
   // -------------------------------------- CALLS --------------------------------------
   // character for walking around canvas
