@@ -147,8 +147,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     eHealthBar.value = 100
     turnDescription.innerText = eName+' appeared!'
     pikaTurn = true
-    playerCorner.classList.add('itsThisPersonsTurn')
-    enemyCorner.classList.remove('itsThisPersonsTurn')
+    pOptions.classList.add('border')
+    eOptions.classList.remove('border')
   }
   // End battle
   function endBattle(){
@@ -161,19 +161,31 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Take turn in battle
   function takeTurn(event){
     if(battlePhase){
-      const attackSelected = AAttack.classList.contains('selected')
-      const healSelected = DHeal.classList.contains('selected')
-      if(event.key==='a'){
+      const attackSelected  = AAttack.classList.contains('selected')
+      const healSelected    = DHeal.classList.contains('selected')
+      const eAttackSelected = eAAttack.classList.contains('selected')
+      const eHealSelected   = eDHeal.classList.contains('selected')
+      if(event.key.toLowerCase()==='a' && pikaTurn){
         AAttack.classList.add('selected')
         DHeal.classList.remove('selected')
         pressEnter.innerText = '(Press Enter to Attack)'
-      }
-      else if(event.key==='d'){
+      } else if(event.key.toLowerCase()==='a'){
+        eAAttack.classList.add('selected')
+        eDHeal.classList.remove('selected')
+        ePressEnter.innerText = '(Press Enter to Attack)'
+      } else if(event.key.toLowerCase()==='d' && pikaTurn){
         DHeal.classList.add('selected')
         AAttack.classList.remove('selected')
         pressEnter.innerText = '(Press Enter to Heal)'
+      } else if(event.key.toLowerCase()==='d'){
+        eDHeal.classList.add('selected')
+        eAAttack.classList.remove('selected')
+        ePressEnter.innerText = '(Press Enter to Heal)'
       }
-      else if(event.key==='Enter' && (attackSelected || healSelected)){
+      else if(event.key==='Enter' &&
+      // It wasn't this messy before Thursday....
+      (((attackSelected || healSelected) && pikaTurn)
+      || ((eAttackSelected || eHealSelected) && !pikaTurn))){
         switch(pikaTurn){
           case true:  // Player's turn
             if(attackSelected){// They have Attack selected and hit enter
@@ -200,41 +212,45 @@ document.addEventListener('DOMContentLoaded',()=>{
               turnDescription.innerText = "Pikachu healed!"
               turnIndicator.innerText = eName+"'s turn"
             }
+            pressEnter.style.display = 'none'
+            ePressEnter.style.display = 'block'
             break
           case false:  // Enemy's turn
-          if(attackSelected){// They have Attack selected and hit enter
-            if(Math.random()<0.9){// Attacks have 90% accuracy
-              if(Math.random()<0.1){// Attacks have 10% critical hit rate
-                turnDescription.innerText = "Critical Hit!!!"
-                healthBar.value -= enemyAttackStat*10
+            if(eAttackSelected){// They have Attack selected and hit enter
+              if(Math.random()<0.9){// Attacks have 90% accuracy
+                if(Math.random()<0.1){// Attacks have 10% critical hit rate
+                  turnDescription.innerText = "Critical Hit!!!"
+                  healthBar.value -= enemyAttackStat*10
+                } else {
+                  turnDescription.innerText = eName+"'s attack landed!"
+                  healthBar.value -= enemyAttackStat
+                }
+                if(healthBar.value<=0){
+                  turnDescription.innerText = "Pikachu ran out of health..."
+                  turnIndicator.innerText = "GAME OVER"
+                } else {
+                  turnIndicator.innerText = "Pikachu's turn"
+                }
               } else {
-                turnDescription.innerText = eName+"'s attack landed!"
-                healthBar.value -= enemyAttackStat
-              }
-              if(healthBar.value<=0){
-                turnDescription.innerText = "Pikachu ran out of health..."
-                turnIndicator.innerText = "GAME OVER"
-              } else {
+                turnDescription.innerText = eName+"'s attack missed!!!"
                 turnIndicator.innerText = "Pikachu's turn"
               }
-            } else {
-              turnDescription.innerText = eName+"'s attack missed!!!"
+            } else if(eHealSelected){
+              eHealthBar.value += enemyHealStat
+              turnDescription.innerText = eName+" healed!"
               turnIndicator.innerText = "Pikachu's turn"
             }
-          } else if(healSelected){
-            eHealthBar.value += enemyHealStat
-            turnDescription.innerText = eName+" healed!"
-            turnIndicator.innerText = "Pikachu's turn"
-          }
+            pressEnter.style.display = 'block'
+            ePressEnter.style.display = 'none'
             break
         }
         pikaTurn = !pikaTurn
         if(pikaTurn){
-          playerCorner.classList.add('itsThisPersonsTurn')
-          enemyCorner.classList.remove('itsThisPersonsTurn')
+          pOptions.classList.add('border')
+          eOptions.classList.remove('border')
         } else {
-          playerCorner.classList.remove('itsThisPersonsTurn')
-          enemyCorner.classList.add('itsThisPersonsTurn')
+          pOptions.classList.remove('border')
+          eOptions.classList.add('border')
         }
       }
     }

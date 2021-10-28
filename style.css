@@ -50,21 +50,40 @@ canvas {
 .view-change #battleView {
   transform: translateX(0);
 }
+#stadiumBackground {
+  background-image: url('stadium.png');
+  background-repeat: no-repeat;
+  background-position: 60% 0%;
+  grid-column: 1/2;
+  grid-row: 1/3;
+}
 .corners {
   height: 250px;
   width: 600px;
-  border: 1px dashed black;
+  /* border: 1px dashed black; */
   position: relative;
 }
 .itsThisPersonsTurn {
-  border: 1px dashed red;
+  /* border: 1px dashed red; */
 }
 #enemyCorner {
   grid-column: 1/2;
+  grid-row: 1/2;
 }
 #enemyHealth {
   color: whitesmoke;
   font-size: 1.5rem;
+  background: #333;
+}
+.enemyOptions {
+  background: #333;
+  margin: 0;
+  padding: 5px;
+}
+.enemyOptions>span {
+  font-size: 2rem;
+  padding: 5px;
+  color: grey;
 }
 #enemyCorner>img {
   width: 300px;
@@ -75,6 +94,7 @@ canvas {
 }
 #playerCorner {
   grid-column: 1/2;
+  grid-row: 2/3;
 }
 #playerCorner>img {
   width: 300px;
@@ -91,6 +111,18 @@ canvas {
   height: 100px;
   font-size: 1.5rem;
   padding: 10px;
+}
+#pOptions {
+  margin: 0 30px;
+}
+#pOptions.border {
+  border: 3px solid black;
+}
+.border#eOptions {
+  border: 3px solid white;
+}
+#eOptions {
+  width: 280px;
 }
 #AAttack, #DHeal {
   padding: 5px;

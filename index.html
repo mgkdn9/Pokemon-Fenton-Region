@@ -19,9 +19,14 @@
     </div>
     
     <div id="battleView">
+      <div id="stadiumBackground"></div>
       <div class="corners" id="enemyCorner">
         <div id="enemyHealth">Lugia Health:
           <progress id="eHealthBar" value="100" max="100"></progress>
+        </div>
+        <div id="eOptions">
+          <p class="enemyOptions"><span id="eAAttack">(A)Attack</span> <span id="eDHeal">(D)Heal</span></p>
+          <h2 class="enemyOptions" id="ePressEnter"></h2>
         </div>
         <img src="lugia.png" alt="Pokemon">
       </div>
@@ -32,8 +37,10 @@
         <div id="turnDescription"></div>
         <h1 id="turnIndicator">Pikachu's turn</h1>
         <h2>Do you want to attack or heal?</h2>
-        <p><span id="AAttack">(A)Attack</span> <span id="DHeal">(D)Heal</span></p>
-        <h2 id="pressEnter"></h2>
+        <div id="pOptions" class="border">
+          <p class="playerOptions"><span id="AAttack">(A)Attack</span> <span id="DHeal">(D)Heal</span></p>
+          <h2 class="playerOptions" id="pressEnter"></h2>
+        </div>
       </div>
     </div>
 
@@ -45,7 +52,7 @@
   </div>
 
   <!-- 'position: fixed' Win Total -->
-  <div id="winTotal">Win Total:<span id="winCounter">0</span></div>
+  <div id="winTotal">Win Total: <span id="winCounter">0</span></div>
 
   <!-- <script src="functions.js"></script> -->
   <script src="app.js"></script>
