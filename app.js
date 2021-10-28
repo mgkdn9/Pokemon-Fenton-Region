@@ -20,7 +20,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     this.color = color
     this.height = height
     this.width = width
+    // this.backgroundImage = 'battlePikachu.png'
     // then to define our 'render' method
+    this.render = function() {
+      ctx.fillStyle = this.color
+      ctx.fillRect(this.x, this.y, this.height, this.width)
+    }
+  }
+
+  // obj fixed to one location in canvas
+  function Brick(x, y, color, height, width){
+    this.x = x
+    this.y = y
+    this.color = color
+    this.height = height
+    this.width = width
+    // render ftn shows on screen
     this.render = function() {
       ctx.fillStyle = this.color
       ctx.fillRect(this.x, this.y, this.height, this.width)
@@ -47,6 +62,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   }
 
+  // detect player entering PokeCenter and heal
+  function pokeCenterHandler(event){
+    if(!battlePhase){
+      if(
+        pikachu.x                 <= pC1r1c.x + pC1r1c.width*5  &&
+        pikachu.x + pikachu.width >= pC1r1c.x                   &&
+        pikachu.y                 <= pC1r1c.y + pC1r1c.height*5 &&
+        pikachu.y + pikachu.height>= pC1r1c.y
+      ){
+        healthBar.value = healthBar.max
+      }
+    }
+  }
+
   // Loop running during roamView
   function roamLoop(){
     // clear the canvas
@@ -60,6 +89,33 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     // render our player
     pikachu.render()
+    // render the PokeCenter (all 25 individual Bricks...)
+    pC1r1c.render()
+    pC1r2c.render()
+    pC1r3c.render()
+    pC1r4c.render()
+    pC1r5c.render()
+    pC2r1c.render()
+    pC2r2c.render()
+    pC2r3c.render()
+    pC2r4c.render()
+    pC2r5c.render()
+    pC3r1c.render()
+    pC3r2c.render()
+    pC3r3c.render()
+    pC3r4c.render()
+    pC3r5c.render()
+    pC4r1c.render()
+    pC4r2c.render()
+    pC4r3c.render()
+    pC4r4c.render()
+    pC4r5c.render()
+    pC5r1c.render()
+    pC5r2c.render()
+    pC5r3c.render()
+    pC5r4c.render()
+    pC5r5c.render()
+    // render Gary (the final boss)
   }
 
   // Check the current position for presense of wild Pokemon
@@ -73,7 +129,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   // When battle starts, slide roamView offscreen to show battleView
-  function viewChange(evt) {
+  function viewChange() {
     main.classList.toggle('view-change');
   }
 
@@ -87,6 +143,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     eHealthBar.value = 100
     turnDescription.innerText = eName+' appeared!'
     pikaTurn = true
+    playerCorner.classList.add('itsThisPersonsTurn')
+    enemyCorner.classList.remove('itsThisPersonsTurn')
   }
   // End battle
   function endBattle(){
@@ -165,6 +223,13 @@ document.addEventListener('DOMContentLoaded',()=>{
             break
         }
         pikaTurn = !pikaTurn
+        if(pikaTurn){
+          playerCorner.classList.add('itsThisPersonsTurn')
+          enemyCorner.classList.remove('itsThisPersonsTurn')
+        } else {
+          playerCorner.classList.remove('itsThisPersonsTurn')
+          enemyCorner.classList.add('itsThisPersonsTurn')
+        }
       }
     }
   }
@@ -172,11 +237,41 @@ document.addEventListener('DOMContentLoaded',()=>{
   
   // -------------------------------------- CALLS --------------------------------------
   // character for walking around canvas
-  let pikachu = new Crawler(10, 10, '#bada55', 16, 16)
-  // healthbar.value = 10
+  let pikachu = new Crawler(10, 10, '#bada55', 10, 10)
+  // PokeCenter for healing character (drawn with 3x3 'Bricks')
+  const pC1r1c = new Brick(10, 100, 'red', 3, 3)
+  const pC1r2c = new Brick(13, 100, 'red', 3, 3)
+  const pC1r3c = new Brick(16, 100, 'red', 3, 3)
+  const pC1r4c = new Brick(19, 100, 'red', 3, 3)
+  const pC1r5c = new Brick(22, 100, 'red', 3, 3)
+  const pC2r1c = new Brick(10, 103, 'red', 3, 3)
+  const pC2r2c = new Brick(13, 103, 'red', 3, 3)
+  const pC2r3c = new Brick(16, 103, 'white', 3, 3)
+  const pC2r4c = new Brick(19, 103, 'red', 3, 3)
+  const pC2r5c = new Brick(22, 103, 'red', 3, 3)
+  const pC3r1c = new Brick(10, 106, 'red', 3, 3)
+  const pC3r2c = new Brick(13, 106, 'white', 3, 3)
+  const pC3r3c = new Brick(16, 106, 'white', 3, 3)
+  const pC3r4c = new Brick(19, 106, 'white', 3, 3)
+  const pC3r5c = new Brick(22, 106, 'red', 3, 3)
+  const pC4r1c = new Brick(10, 109, 'red', 3, 3)
+  const pC4r2c = new Brick(13, 109, 'red', 3, 3)
+  const pC4r3c = new Brick(16, 109, 'white', 3, 3)
+  const pC4r4c = new Brick(19, 109, 'red', 3, 3)
+  const pC4r5c = new Brick(22, 109, 'red', 3, 3)
+  const pC5r1c = new Brick(10, 112, 'red', 3, 3)
+  const pC5r2c = new Brick(13, 112, 'red', 3, 3)
+  const pC5r3c = new Brick(16, 112, 'red', 3, 3)
+  const pC5r4c = new Brick(19, 112, 'red', 3, 3)
+  const pC5r5c = new Brick(22, 112, 'red', 3, 3)
+  // character representing Gary (final boss)
+  const gary = new Crawler(10.10,'brown',canvas.width/2,canvas.height/2)
 
   // add event listener for player movement
   document.addEventListener('keydown',movementHandler)
+
+  // PokeCenter hit detection
+  document.addEventListener('keydown',pokeCenterHandler)
 
   // Run ftn roamLoop inside setInterval to update playerMovementArea during Roaming
   const gameInterval = setInterval(roamLoop, 70)
