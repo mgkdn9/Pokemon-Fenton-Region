@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
   // const playerAttackStat = 40
-  // const playerHealStat = 60
+  const playerHealStat = document.getElementById('playerHealStat')
   // const enemyAttackStat = 2
-  // const enemyHealStat = 3
+  const enemyHealStat = document.getElementById('enemyHealStat')
   const eName = 'Lugia'
   let winNumber = 0
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
@@ -207,13 +207,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                 if(Math.random()<0.1){// Attacks have 10% critical hit rate
                   turnDescription.innerText = "Critical Hit!!!"
                   console.log(turnDescription.innerText)
-                  eHealthBar.value -= playerAttackStat*10
+                  eHealthBar.value -= playerAttackStat.value*10
                 } else {
                   turnDescription.innerText = "Pikachu's attack landed!"
                   eHealthBar.value -= playerAttackStat.value
                 }
                 if(eHealthBar.value<=0){
                   turnDescription.innerText = eName+" ran out of health..."
+                  battlePhase = false
                   setTimeout(endBattle,1500)
                 } else {
                   turnIndicator.innerText = eName+"'s turn"
@@ -223,7 +224,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 turnIndicator.innerText = eName+"'s turn"
               }
             } else if(healSelected){
-              healthBar.value += playerHealStat.value
+              healthBar.value += parseInt(playerHealStat.value,10)
               turnDescription.innerText = "Pikachu healed!"
               turnIndicator.innerText = eName+"'s turn"
             }
@@ -309,7 +310,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   }
   function eHeal(){
-    eHealthBar.value += enemyHealStat.value
+    eHealthBar.value += parseInt(enemyHealStat.value,10)
     turnDescription.innerText = eName+" healed!"
     turnIndicator.innerText = "Pikachu's turn"
   }
