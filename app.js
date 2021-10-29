@@ -11,28 +11,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   const enemyHealStat = 3
   const eName = 'Lugia'
   let winNumber = 0
-  //true=>battling against AI, false=> player selects enemy moves
-  let aIOn = document.getElementById('aIMode').checked
+  let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
+  let renderWildOnes = document.getElementById('renderPokemon').checked
 
   // -------------------------------------- FUNCTIONS --------------------------------------
-  // obj capable of moving around canvas
-  function Crawler(x, y, color, height, width){
-    this.x = x
-    this.y = y
-    this.color = color
-    this.height = height
-    this.width = width
-    // this.background = 'battlePikachu.png'
-    this.backgroundImage = ('battlePikachu.png');
-    // then to define our 'render' method
-    this.render = function() {
-      ctx.fillStyle = this.color
-      ctx.fillRect(this.x, this.y, this.height, this.width)
-    }
-  }
-
-  // obj fixed to one location in canvas
-  function Brick(x, y, color, height, width){
+    // obj for appearing on canvas
+  function Block(x, y, color, height, width){
     this.x = x
     this.y = y
     this.color = color
@@ -66,7 +50,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   // detect player entering PokeCenter and heal
-  function pokeCenterHandler(event){
+  function pokeCenterHandler(){
     if(!battlePhase){
       if(
         pikachu.x                 <= pC1r1c.x + pC1r1c.width*5  &&
@@ -83,50 +67,71 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // Loop running during roamView
   function roamLoop(){
-    // clear the canvas
-    ctx.clearRect(0,0, canvas.width, canvas.height)
-    // display relevant game state (player movement) in our movement display
-    pikaPosition.innerText = `x: ${pikachu.x}\ny: ${pikachu.y}`
-    
-    //HERE IS WHERE WE WILL LOOK FOR WILD POKEMON ENCOUNTERS
-    //OR PRESSING OF B KEY TO START
-    detectEncounter()
+    if(!battlePhase){
+      // clear the canvas
+      ctx.clearRect(0,0, canvas.width, canvas.height)
+      // display relevant game state (player movement) in our movement display
+      pikaPosition.innerText = `x: ${pikachu.x}\ny: ${pikachu.y}`
+      
+      //HERE IS WHERE WE WILL LOOK FOR WILD POKEMON ENCOUNTERS
+      // zubats.forEach(zubat => detectEncounter(zubat))
+      for(let i=0; i<zubats.length; i++){
+        detectEncounter(zubats[i],i)
+      }
 
-    // render our player
-    pikachu.render()
-    // render the PokeCenter (all 25 individual Bricks...)
-    pC1r1c.render()
-    pC1r2c.render()
-    pC1r3c.render()
-    pC1r4c.render()
-    pC1r5c.render()
-    pC2r1c.render()
-    pC2r2c.render()
-    pC2r3c.render()
-    pC2r4c.render()
-    pC2r5c.render()
-    pC3r1c.render()
-    pC3r2c.render()
-    pC3r3c.render()
-    pC3r4c.render()
-    pC3r5c.render()
-    pC4r1c.render()
-    pC4r2c.render()
-    pC4r3c.render()
-    pC4r4c.render()
-    pC4r5c.render()
-    pC5r1c.render()
-    pC5r2c.render()
-    pC5r3c.render()
-    pC5r4c.render()
-    pC5r5c.render()
-    // render Gary (the final boss)
-    gary.render()
+      // render the PokeCenter (all 25 individual Bricks...)
+      pC1r1c.render()
+      pC1r2c.render()
+      pC1r3c.render()
+      pC1r4c.render()
+      pC1r5c.render()
+      pC2r1c.render()
+      pC2r2c.render()
+      pC2r3c.render()
+      pC2r4c.render()
+      pC2r5c.render()
+      pC3r1c.render()
+      pC3r2c.render()
+      pC3r3c.render()
+      pC3r4c.render()
+      pC3r5c.render()
+      pC4r1c.render()
+      pC4r2c.render()
+      pC4r3c.render()
+      pC4r4c.render()
+      pC4r5c.render()
+      pC5r1c.render()
+      pC5r2c.render()
+      pC5r3c.render()
+      pC5r4c.render()
+      pC5r5c.render()
+      // render tall grass where Pokemon will hide
+      tallGrass.render()
+      // render 20 random Pokemon if checkbox checked
+      renderWildOnes = document.getElementById('renderPokemon').checked
+      if(renderWildOnes){
+        zubats.forEach(zubat=>{
+          zubat.render()
+        })
+      }
+      // render Gary (the final boss)
+      gary.render()
+      // render our player
+      pikachu.render()
+    }
   }
 
   // Check the current position for presense of wild Pokemon
-  function detectEncounter(){
-    if(false){startBattle()}//just a mental placeholder
+  function detectEncounter(zubat,i){
+    if(
+      pikachu.x + pikachu.width >= zubat.x                &&
+      pikachu.x                 <= zubat.x + zubat.width  &&
+      pikachu.y + pikachu.height>= zubat.y                &&
+      pikachu.y                 <= zubat.y + zubat.height
+    ){
+      startBattle()
+      zubats.splice(i,1)
+    }
   }
 
   // Press B to automatically start battle
@@ -225,7 +230,6 @@ document.addEventListener('DOMContentLoaded',()=>{
             ePressEnter.style.display = 'block'
             // get checkbox value for AI Mode
             aIOn = document.getElementById('aIMode').checked
-            console.log('aIOn: ',aIOn)
             if(aIOn){setTimeout(startAITurn,1500)}
             break
           case false:  // Enemy's turn
@@ -309,36 +313,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   
   // -------------------------------------- CALLS --------------------------------------
+  // Randomly dispersed wild pokemon
+  const zubats = []
+  for(let i=0; i<20; i++){
+    let zubat = new Block(
+      Math.random()*190+50,//X
+      Math.random()*110+15,//Y
+      'purple',10,10)
+    zubats.push(zubat)
+  }
+  // Field of tall grass where pokemon might be lurking
+  const tallGrass = new Block(50,15,'green',200,120)
   // character for walking around canvas
-  let pikachu = new Crawler(10, 10, '#bada55', 10, 10)
+  const pikachu = new Block(10, 10, '#bada55', 10, 10)
   // PokeCenter for healing character (drawn with 3x3 'Bricks')
-  const pC1r1c = new Brick(10, 100, 'red', 3, 3)
-  const pC1r2c = new Brick(13, 100, 'red', 3, 3)
-  const pC1r3c = new Brick(16, 100, 'red', 3, 3)
-  const pC1r4c = new Brick(19, 100, 'red', 3, 3)
-  const pC1r5c = new Brick(22, 100, 'red', 3, 3)
-  const pC2r1c = new Brick(10, 103, 'red', 3, 3)
-  const pC2r2c = new Brick(13, 103, 'red', 3, 3)
-  const pC2r3c = new Brick(16, 103, 'white', 3, 3)
-  const pC2r4c = new Brick(19, 103, 'red', 3, 3)
-  const pC2r5c = new Brick(22, 103, 'red', 3, 3)
-  const pC3r1c = new Brick(10, 106, 'red', 3, 3)
-  const pC3r2c = new Brick(13, 106, 'white', 3, 3)
-  const pC3r3c = new Brick(16, 106, 'white', 3, 3)
-  const pC3r4c = new Brick(19, 106, 'white', 3, 3)
-  const pC3r5c = new Brick(22, 106, 'red', 3, 3)
-  const pC4r1c = new Brick(10, 109, 'red', 3, 3)
-  const pC4r2c = new Brick(13, 109, 'red', 3, 3)
-  const pC4r3c = new Brick(16, 109, 'white', 3, 3)
-  const pC4r4c = new Brick(19, 109, 'red', 3, 3)
-  const pC4r5c = new Brick(22, 109, 'red', 3, 3)
-  const pC5r1c = new Brick(10, 112, 'red', 3, 3)
-  const pC5r2c = new Brick(13, 112, 'red', 3, 3)
-  const pC5r3c = new Brick(16, 112, 'red', 3, 3)
-  const pC5r4c = new Brick(19, 112, 'red', 3, 3)
-  const pC5r5c = new Brick(22, 112, 'red', 3, 3)
+  const pC1r1c = new Block(10, 100, 'red', 3, 3)
+  const pC1r2c = new Block(13, 100, 'red', 3, 3)
+  const pC1r3c = new Block(16, 100, 'red', 3, 3)
+  const pC1r4c = new Block(19, 100, 'red', 3, 3)
+  const pC1r5c = new Block(22, 100, 'red', 3, 3)
+  const pC2r1c = new Block(10, 103, 'red', 3, 3)
+  const pC2r2c = new Block(13, 103, 'red', 3, 3)
+  const pC2r3c = new Block(16, 103, 'white', 3, 3)
+  const pC2r4c = new Block(19, 103, 'red', 3, 3)
+  const pC2r5c = new Block(22, 103, 'red', 3, 3)
+  const pC3r1c = new Block(10, 106, 'red', 3, 3)
+  const pC3r2c = new Block(13, 106, 'white', 3, 3)
+  const pC3r3c = new Block(16, 106, 'white', 3, 3)
+  const pC3r4c = new Block(19, 106, 'white', 3, 3)
+  const pC3r5c = new Block(22, 106, 'red', 3, 3)
+  const pC4r1c = new Block(10, 109, 'red', 3, 3)
+  const pC4r2c = new Block(13, 109, 'red', 3, 3)
+  const pC4r3c = new Block(16, 109, 'white', 3, 3)
+  const pC4r4c = new Block(19, 109, 'red', 3, 3)
+  const pC4r5c = new Block(22, 109, 'red', 3, 3)
+  const pC5r1c = new Block(10, 112, 'red', 3, 3)
+  const pC5r2c = new Block(13, 112, 'red', 3, 3)
+  const pC5r3c = new Block(16, 112, 'red', 3, 3)
+  const pC5r4c = new Block(19, 112, 'red', 3, 3)
+  const pC5r5c = new Block(22, 112, 'red', 3, 3)
   // character representing Gary (final boss)
-  const gary = new Crawler(canvas.width-20,canvas.height/2,'brown',10,10)
+  const gary = new Block(canvas.width-20,canvas.height/2-5,'brown',10,10)
 
   // add event listener for player movement
   document.addEventListener('keydown',movementHandler)
@@ -354,4 +369,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // State machine for battling
   document.addEventListener('keydown',takeTurn)
+
+  // Button for manually changing view (for development only)
+  viewChangeBtn.addEventListener('click',viewChange)
 })
