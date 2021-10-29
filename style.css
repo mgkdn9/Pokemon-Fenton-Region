@@ -8,6 +8,20 @@ header {
   color: whitesmoke;
   min-height: 100px;
 }
+#pikaPosition {
+  font-size: 1.5rem;
+}
+label {
+  margin: 10px;
+  font-size: 1.5rem;
+}
+label>input[type=number]{
+  font-size: 1.5rem;
+  width: 50px;
+}
+#viewChangeBtn {
+  display: none;
+}
 main {
   /* width: 300px; */
   width: 100%;

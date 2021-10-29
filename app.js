@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   const eHealthBar = document.getElementById('eHealthBar')
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
-  const playerAttackStat = 40
-  const playerHealStat = 60
-  const enemyAttackStat = 2
-  const enemyHealStat = 3
+  // const playerAttackStat = 40
+  // const playerHealStat = 60
+  // const enemyAttackStat = 2
+  // const enemyHealStat = 3
   const eName = 'Lugia'
   let winNumber = 0
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
@@ -206,10 +206,11 @@ document.addEventListener('DOMContentLoaded',()=>{
               if(Math.random()<0.9){// Attacks have 90% accuracy
                 if(Math.random()<0.1){// Attacks have 10% critical hit rate
                   turnDescription.innerText = "Critical Hit!!!"
+                  console.log(turnDescription.innerText)
                   eHealthBar.value -= playerAttackStat*10
                 } else {
                   turnDescription.innerText = "Pikachu's attack landed!"
-                  eHealthBar.value -= playerAttackStat
+                  eHealthBar.value -= playerAttackStat.value
                 }
                 if(eHealthBar.value<=0){
                   turnDescription.innerText = eName+" ran out of health..."
@@ -222,7 +223,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 turnIndicator.innerText = eName+"'s turn"
               }
             } else if(healSelected){
-              healthBar.value += playerHealStat
+              healthBar.value += playerHealStat.value
               turnDescription.innerText = "Pikachu healed!"
               turnIndicator.innerText = eName+"'s turn"
             }
@@ -259,7 +260,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   // Make AI make a move
   function startAITurn(){
-    console.log('at startAITurn')
     if(Math.random()<0.7 || eHealthBar.value===eHealthBar.max){//AI will attack 70% of the time when health not full
       if(eAAttack.classList.contains('selected')){
         eAttack()
@@ -290,14 +290,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(Math.random()<0.9){// Attacks have 90% accuracy
       if(Math.random()<0.1){// Attacks have 10% critical hit rate
         turnDescription.innerText = "Critical Hit!!!"
-        healthBar.value -= enemyAttackStat*10
+        console.log(turnDescription.innerText)
+        healthBar.value -= enemyAttackStat.value*10
       } else {
         turnDescription.innerText = eName+"'s attack landed!"
-        healthBar.value -= enemyAttackStat
+        healthBar.value -= enemyAttackStat.value
       }
       if(healthBar.value<=0){
         turnDescription.innerText = "Pikachu ran out of health..."
         turnIndicator.innerText = "GAME OVER"
+        battlePhase = false
       } else {
         turnIndicator.innerText = "Pikachu's turn"
       }
@@ -307,7 +309,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   }
   function eHeal(){
-    eHealthBar.value += enemyHealStat
+    eHealthBar.value += enemyHealStat.value
     turnDescription.innerText = eName+" healed!"
     turnIndicator.innerText = "Pikachu's turn"
   }
