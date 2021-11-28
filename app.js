@@ -143,25 +143,61 @@ document.addEventListener('DOMContentLoaded',()=>{
   function viewChange() {
     main.classList.toggle('view-change');
   }
+  btnChangeView.addEventListener('click',() => {
+    viewChange()
+    // console.log(main.classList))
+  })
 
   // Stop rendering canvas in battleView
   function clearGameInterval(){clearInterval(gameInterval)}
 
   // Start battle
   function startBattle(){
-    battlePhase = true
-    viewChange()
-    eHealthBar.value = 100
-    turnDescription.innerText = eName+' appeared!'
-    pikaTurn = true
-    pOptions.classList.add('border')
-    eOptions.classList.remove('border')
-    pressEnter.style.display = 'none'
-    ePressEnter.style.display = 'none'
-    DHeal.classList.remove('selected')
-    eDHeal.classList.remove('selected')
-    AAttack.classList.remove('selected')
-    eAAttack.classList.remove('selected')
+    //Pick a random Pokemon for the user to battle
+    // fetch data from reddit
+    // fetchRedditData()
+    const searchBox = document.querySelector('.searchBox')
+    const searchTerm = searchBox.value
+    console.log(searchTerm)
+
+    let gotPokemon = false
+    // const fetchURL = 'https://www.reddit.com/search.json?q='
+    const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
+
+
+    // fetch(fetchURL+searchTerm+'&limit=10')
+    fetch(fetchURL+searchTerm)
+      .then(response => response.json())
+      .then((jsonData) => {
+        // Received data from API:
+        console.log('jsonData:\n',jsonData)
+        // Take img url from response obj
+        const imgSrc = jsonData.sprites.front_default
+        // console.log(imgSrc)
+
+        // Change image of enemy to be newly found Pokemon
+        const enemyImg = document.getElementById('enemyImg')
+        enemyImg.src = imgSrc
+
+        gotPokemon = true
+      })
+      .catch(console.error)
+    if(gotPokemon){
+      battlePhase = true
+      viewChange()
+      eHealthBar.value = 100
+      turnDescription.innerText = eName+' appeared!'
+      pikaTurn = true
+      pOptions.classList.add('border')
+      eOptions.classList.remove('border')
+      pressEnter.style.display = 'none'
+      ePressEnter.style.display = 'none'
+      DHeal.classList.remove('selected')
+      eDHeal.classList.remove('selected')
+      AAttack.classList.remove('selected')
+      eAAttack.classList.remove('selected')
+    }
+    
   }
   // End battle
   function endBattle(){
