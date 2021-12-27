@@ -143,7 +143,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   function viewChange() {
     main.classList.toggle('view-change');
   }
-  btnChangeView.addEventListener('click',() => {
+  btnChangeView.addEventListener('click',(e) => {
+    e.preventDefault()
     viewChange()
     // console.log(main.classList))
   })
