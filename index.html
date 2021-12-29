@@ -11,15 +11,15 @@
   <header id="header">
 
     <div class="searching">
-      <input checked type="radio" id="choseRandom"
-       name="contact" value="random">
+      <input checked type="radio" id="choseRandom" name="radioChose" value="random"
+      onclick="searchBox.disabled = true">
       <label for="choseRandom">Random Enemy</label>
 
-      <input type="radio" id="choseSearch"
-       name="contact" value="search">
+      <input type="radio" id="choseSearch" name="radioChose" value="search"
+      onclick="searchBox.disabled = false">
       <label for="choseSearch">Search</label>
   
-      <input class="searchBox" type="text">
+      <input disabled id="searchBox" type="text">
 
       <button id="btnChangeView">Change View</button>
     </div>

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
-  const arrsPokeNames = []// array for holding names in function
+  const arrsPokeNames = []// array for holding names
   const nPokemonAvailable = 898
   const ctx = canvas.getContext('2d')
   let healthBar = document.getElementById('healthbar')
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
   let renderWildOnes = document.getElementById('renderPokemon').checked
   //Pick a random Pokemon for the user to battle
-  const searchBox = document.querySelector('.searchBox')
+  // const searchBox = document.querySelector('.searchBox')
 
   // -------------------------------------- FUNCTIONS --------------------------------------
   
@@ -222,7 +222,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     winCounter.innerText = winNumber
     viewChange()
     // If Random is the selected radio, pick a new Pokemon at random
-    searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
+    if (choseRandom.checked){
+      searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
+    }
   }
 
   // Take turn in battle
