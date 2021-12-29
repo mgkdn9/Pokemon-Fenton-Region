@@ -10,14 +10,19 @@
 <body>
   <header id="header">
 
-
     <div class="searching">
-      <form action="">
-        <input class="searchBox" type="text" placeholder="Search Pokedex" value="charizard">
-        <button id="btnChangeView">Change View</button>
-      </form>
-    </div>
+      <input checked type="radio" id="choseRandom"
+       name="contact" value="random">
+      <label for="choseRandom">Random Enemy</label>
 
+      <input type="radio" id="choseSearch"
+       name="contact" value="search">
+      <label for="choseSearch">Search</label>
+  
+      <input class="searchBox" type="text">
+
+      <button id="btnChangeView">Change View</button>
+    </div>
 
     <div id="pikaPosition">Pikachu Position: </div>
     <label for="aIMode">

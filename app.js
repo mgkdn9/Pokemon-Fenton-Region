@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
+  const arrsPokeNames = []// array for holding names in function
+  const nPokemonAvailable = 898
   const ctx = canvas.getContext('2d')
   let healthBar = document.getElementById('healthbar')
   const eHealthBar = document.getElementById('eHealthBar')
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
   // const playerAttackStat = 40
+  // Is the following line even necessary?
   const playerHealStat = document.getElementById('playerHealStat')
   // const enemyAttackStat = 2
   const enemyHealStat = document.getElementById('enemyHealStat')
@@ -13,9 +16,32 @@ document.addEventListener('DOMContentLoaded',()=>{
   let winNumber = 0
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
   let renderWildOnes = document.getElementById('renderPokemon').checked
+  //Pick a random Pokemon for the user to battle
+  const searchBox = document.querySelector('.searchBox')
 
   // -------------------------------------- FUNCTIONS --------------------------------------
-    // obj for appearing on canvas
+  
+  // immediately fetch for array of Pokemon names
+  function getPokeNames(){
+    // URL for Poke API
+    const fetchURL = 'http://pokeapi.co/api/v2/pokemon/?limit='+nPokemonAvailable
+    fetch(fetchURL)
+      .then(response => response.json())
+      .then((jsonData) => {
+        // Received data from API:
+        // console.log('jsonData:\n',jsonData)
+        for(let i=0; i<jsonData.results.length; i++){
+          arrsPokeNames.push(jsonData.results[i].name)
+        }
+        // console.log(arrsPokeNames) //array filled
+        // pick one at random
+        searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
+      })
+  }
+  getPokeNames()
+  // console.log('arrsPokeNames: ',arrsPokeNames)//array filled
+  
+  // obj for appearing on canvas
   function Block(x, y, color, height, width){
     this.x = x
     this.y = y
@@ -130,6 +156,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       pikachu.y                 <= zubat.y + zubat.height
     ){
       startBattle()
+      console.log('---Battle started from detectEncounter---')
       zubats.splice(i,1)
     }
   }
@@ -146,7 +173,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   btnChangeView.addEventListener('click',(e) => {
     e.preventDefault()
     viewChange()
-    // console.log(main.classList))
   })
 
   // Stop rendering canvas in battleView
@@ -154,50 +180,39 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // Start battle
   function startBattle(){
-    //Pick a random Pokemon for the user to battle
-    // fetch data from reddit
-    // fetchRedditData()
-    const searchBox = document.querySelector('.searchBox')
-    const searchTerm = searchBox.value
-    console.log(searchTerm)
 
-    let gotPokemon = false
-    // const fetchURL = 'https://www.reddit.com/search.json?q='
+    // let gotPokemon = false
     const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
 
-
-    // fetch(fetchURL+searchTerm+'&limit=10')
-    fetch(fetchURL+searchTerm)
+    // fetch(https://pokeapi.co/api/v2/pokemon/?limit=898')
+    fetch(fetchURL+searchBox.value)
       .then(response => response.json())
       .then((jsonData) => {
         // Received data from API:
         console.log('jsonData:\n',jsonData)
         // Take img url from response obj
         const imgSrc = jsonData.sprites.front_default
-        // console.log(imgSrc)
 
         // Change image of enemy to be newly found Pokemon
         const enemyImg = document.getElementById('enemyImg')
         enemyImg.src = imgSrc
 
-        gotPokemon = true
+
+        battlePhase = true
+        viewChange()
+        eHealthBar.value = 100
+        turnDescription.innerText = eName+' appeared!'
+        pikaTurn = true
+        pOptions.classList.add('border')
+        eOptions.classList.remove('border')
+        pressEnter.style.display = 'none'
+        ePressEnter.style.display = 'none'
+        DHeal.classList.remove('selected')
+        eDHeal.classList.remove('selected')
+        AAttack.classList.remove('selected')
+        eAAttack.classList.remove('selected')
       })
       .catch(console.error)
-    if(gotPokemon){
-      battlePhase = true
-      viewChange()
-      eHealthBar.value = 100
-      turnDescription.innerText = eName+' appeared!'
-      pikaTurn = true
-      pOptions.classList.add('border')
-      eOptions.classList.remove('border')
-      pressEnter.style.display = 'none'
-      ePressEnter.style.display = 'none'
-      DHeal.classList.remove('selected')
-      eDHeal.classList.remove('selected')
-      AAttack.classList.remove('selected')
-      eAAttack.classList.remove('selected')
-    }
     
   }
   // End battle
@@ -206,6 +221,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     winNumber++
     winCounter.innerText = winNumber
     viewChange()
+    // If Random is the selected radio, pick a new Pokemon at random
+    searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
   }
 
   // Take turn in battle
