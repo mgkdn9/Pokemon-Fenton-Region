@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   const playerHealStat = document.getElementById('playerHealStat')
   // const enemyAttackStat = 2
   const enemyHealStat = document.getElementById('enemyHealStat')
-  const eName = 'Lugia'
   let winNumber = 0
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
   let renderWildOnes = document.getElementById('renderPokemon').checked
@@ -60,16 +59,32 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!battlePhase){
       switch (event.key.toLowerCase()) {
         case'w': // W key
-          pikachu.y -= 10//move up 10
+          if(pikachu.y <= 10){
+            pikachu.y = 0   //don't go past boundary
+          } else {
+            pikachu.y -= 10 //move up 10
+          }
           break
         case'a': // A key
-          pikachu.x -= 10//move left 10
+          if(pikachu.x <= 10){
+            pikachu.x = 0   //don't go past boundary
+          } else {
+            pikachu.x -= 10 //move left 10
+          }
           break
         case's': // S key
-          pikachu.y += 10//move down 10
+          if(pikachu.y >= 130){
+            pikachu.y = 140 //don't go past boundary
+          } else {
+            pikachu.y += 10 //move down 10
+          }
           break
         case'd': // D key
-          pikachu.x += 10//move right 10
+          if(pikachu.x >= 280){
+            pikachu.x = 290 //don't go past boundary
+          } else {
+            pikachu.x += 10 //move right 10
+          }
           break
       }
     }
@@ -201,7 +216,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         battlePhase = true
         viewChange()
         eHealthBar.value = 100
-        turnDescription.innerText = eName+' appeared!'
+        turnDescription.innerText = searchBox.value+' appeared!'
         pikaTurn = true
         pOptions.classList.add('border')
         eOptions.classList.remove('border')
@@ -269,20 +284,20 @@ document.addEventListener('DOMContentLoaded',()=>{
                   eHealthBar.value -= playerAttackStat.value
                 }
                 if(eHealthBar.value<=0){
-                  turnDescription.innerText = eName+" ran out of health..."
+                  turnDescription.innerText = searchBox.value+" ran out of health..."
                   battlePhase = false
                   setTimeout(endBattle,1500)
                 } else {
-                  turnIndicator.innerText = eName+"'s turn"
+                  turnIndicator.innerText = searchBox.value+"'s turn"
                 }
               } else {
                 turnDescription.innerText = "Pikachu's attack missed!!!"
-                turnIndicator.innerText = eName+"'s turn"
+                turnIndicator.innerText = searchBox.value+"'s turn"
               }
             } else if(healSelected){
               healthBar.value += parseInt(playerHealStat.value,10)
               turnDescription.innerText = "Pikachu healed!"
-              turnIndicator.innerText = eName+"'s turn"
+              turnIndicator.innerText = searchBox.value+"'s turn"
             }
             pressEnter.style.display = 'none'
             ePressEnter.style.display = 'block'
@@ -350,7 +365,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         console.log(turnDescription.innerText)
         healthBar.value -= enemyAttackStat.value*10
       } else {
-        turnDescription.innerText = eName+"'s attack landed!"
+        turnDescription.innerText = searchBox.value+"'s attack landed!"
         healthBar.value -= enemyAttackStat.value
       }
       if(healthBar.value<=0){
@@ -361,13 +376,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         turnIndicator.innerText = "Pikachu's turn"
       }
     } else {
-      turnDescription.innerText = eName+"'s attack missed!!!"
+      turnDescription.innerText = searchBox.value+"'s attack missed!!!"
       turnIndicator.innerText = "Pikachu's turn"
     }
   }
   function eHeal(){
     eHealthBar.value += parseInt(enemyHealStat.value,10)
-    turnDescription.innerText = eName+" healed!"
+    turnDescription.innerText = searchBox.value+" healed!"
     turnIndicator.innerText = "Pikachu's turn"
   }
   
