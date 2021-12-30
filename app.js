@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
-  const arrsPokeNames = []// array for holding names
+  const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
+  const arrsPokeNames = []// array for holding all Pokemon names
   const nPokemonAvailable = 898
   const ctx = canvas.getContext('2d')
   let healthBar = document.getElementById('healthbar')
@@ -15,8 +16,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   let winNumber = 0
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
   let renderWildOnes = document.getElementById('renderPokemon').checked
-  //Pick a random Pokemon for the user to battle
-  // const searchBox = document.querySelector('.searchBox')
+  // counter for how many enemies you hit in order to do them back to back
+  const nEncounters = 0
 
   // -------------------------------------- FUNCTIONS --------------------------------------
   
@@ -33,8 +34,14 @@ document.addEventListener('DOMContentLoaded',()=>{
           arrsPokeNames.push(jsonData.results[i].name)
         }
         // console.log(arrsPokeNames) //array filled
-        // pick one at random
+        // pick one at random for the first battle
         searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
+        // put them in the html datalist
+        arrsPokeNames.forEach(function(item){
+          var option = document.createElement('option');
+          option.value = item;
+          datalist.appendChild(option);
+        })
       })
   }
   getPokeNames()
@@ -112,12 +119,14 @@ document.addEventListener('DOMContentLoaded',()=>{
       // clear the canvas
       ctx.clearRect(0,0, canvas.width, canvas.height)
       // display relevant game state (player movement) in our movement display
-      pikaPosition.innerText = `x: ${pikachu.x}\ny: ${pikachu.y}`
+      pikaPosition.innerText = `Pikachu Position: x: ${pikachu.x}, y: ${pikachu.y}`
       
       //HERE IS WHERE WE WILL LOOK FOR WILD POKEMON ENCOUNTERS
       // zubats.forEach(zubat => detectEncounter(zubat))
       for(let i=0; i<zubats.length; i++){
-        detectEncounter(zubats[i],i)
+        if(!battlePhase){
+          detectEncounter(zubats[i],i)
+        }
       }
 
       // render the PokeCenter (all 25 individual Bricks...)
@@ -196,15 +205,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Start battle
   function startBattle(){
 
-    // let gotPokemon = false
-    const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
+    // At the top:
+    // const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
 
     // fetch(https://pokeapi.co/api/v2/pokemon/?limit=898')
     fetch(fetchURL+searchBox.value)
       .then(response => response.json())
       .then((jsonData) => {
         // Received data from API:
-        console.log('jsonData:\n',jsonData)
+        console.log('Received data from API: jsonData:\n',jsonData)
         // Take img url from response obj
         const imgSrc = jsonData.sprites.front_default
 
@@ -398,7 +407,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   // Field of tall grass where pokemon might be lurking
   const tallGrass = new Block(50,15,'green',200,120)
-  // character for walking around canvas
+  // character for walking around canvas. Only thing that moves
   const pikachu = new Block(10, 10, '#bada55', 10, 10)
   // PokeCenter for healing character (drawn with 3x3 'Bricks')
   const pC1r1c = new Block(10, 100, 'red', 3, 3)

@@ -31,3 +31,14 @@ Live Link: [PokeClone Fenton Region](https://mgkdn9.github.io/Pokemon-Fenton-Reg
 ## How it works
 ### There is a roaming phase and a battling phase
 ### Roaming is outside of battle when Player is walking around looking for things 
+### Battling is when player encounters wild Pokemon (or enemy trainer) and must fight to continue
+
+
+## To Dos
+### Fix issue with running into multiple foes
+
+### Make health go down slowly ("S-shaped") with vanishing red rectangle
+### Figure out why have to make Change View btn hidden and can't just be deleted when needed
+### Make modes where enemies move / chase after you
+
+### Changed 'Render...' to unchecked and playerAttackStat back to 40
