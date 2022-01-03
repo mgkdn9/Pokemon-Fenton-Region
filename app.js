@@ -1,23 +1,23 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
-  const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
+  const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'//URL for API
   const arrsPokeNames = []// array for holding all Pokemon names
-  const nPokemonAvailable = 898
-  const ctx = canvas.getContext('2d')
+  const nPokemonAvailable = 898//Number of Pokemon to get from API
+  const ctx = canvas.getContext('2d')//2Dimensional roaming area for player/enemies
   let healthBar = document.getElementById('healthbar')
-  const eHealthBar = document.getElementById('eHealthBar')
+  // const eHealthBar = document.getElementById('eHealthBar')
   let battlePhase = false //false=>Roaming, true=>Battling
   let pikaTurn = true //true=>Player's turn in battle, false=>Enemy's turn
   // const playerAttackStat = 40
   // Is the following line even necessary?
-  const playerHealStat = document.getElementById('playerHealStat')
+  // const playerHealStat = document.getElementById('playerHealStat')
   // const enemyAttackStat = 2
-  const enemyHealStat = document.getElementById('enemyHealStat')
-  let winNumber = 0
+  // const enemyHealStat = document.getElementById('enemyHealStat')
+  let winNumber = 0//Counter to keep a high score for battles won
   let aIOn = document.getElementById('aIMode').checked//true=>battling against AI, false=> player selects enemy moves
   let renderWildOnes = document.getElementById('renderPokemon').checked
   // counter for how many enemies you hit in order to do them back to back
-  const nEncounters = 0
+  // const nEncounters = 0//Not yet used
 
   // -------------------------------------- FUNCTIONS --------------------------------------
   
@@ -26,23 +26,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     // URL for Poke API
     const fetchURL = 'http://pokeapi.co/api/v2/pokemon/?limit='+nPokemonAvailable
     fetch(fetchURL)
-      .then(response => response.json())
-      .then((jsonData) => {
-        // Received data from API:
-        // console.log('jsonData:\n',jsonData)
-        for(let i=0; i<jsonData.results.length; i++){
-          arrsPokeNames.push(jsonData.results[i].name)
-        }
-        // console.log(arrsPokeNames) //array filled
-        // pick one at random for the first battle
-        searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
-        // put them in the html datalist
-        arrsPokeNames.forEach(function(item){
-          var option = document.createElement('option');
-          option.value = item;
-          datalist.appendChild(option);
-        })
+    .then(response => response.json())
+    .then((jsonData) => {
+      // Received data from API:
+      // console.log('jsonData:\n',jsonData)
+      for(let i=0; i<jsonData.results.length; i++){
+        arrsPokeNames.push(jsonData.results[i].name)
+      }
+      // console.log(arrsPokeNames) //array filled
+      // pick one at random for the first battle
+      searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
+      // put them in the html datalist
+      arrsPokeNames.forEach(function(item){
+        var option = document.createElement('option');
+        option.value = item;
+        datalist.appendChild(option);
       })
+    })
   }
   getPokeNames()
   // console.log('arrsPokeNames: ',arrsPokeNames)//array filled
@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // detect player entering PokeCenter and heal
   function pokeCenterHandler(){
     if(!battlePhase){
+      //If you make contact with the PokeCenter, heal, reset winCounter, reseed wild Pokemon
       if(
         pikachu.x                 <= pC1r1c.x + pC1r1c.width*5  &&
         pikachu.x + pikachu.width >= pC1r1c.x                   &&
@@ -174,10 +175,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Check the current position for presense of wild Pokemon
   function detectEncounter(zubat,i){
     if(
-      pikachu.x + pikachu.width >= zubat.x                &&
-      pikachu.x                 <= zubat.x + zubat.width  &&
-      pikachu.y + pikachu.height>= zubat.y                &&
-      pikachu.y                 <= zubat.y + zubat.height
+      pikachu.x + pikachu.width > zubat.x                &&
+      pikachu.x                 < zubat.x + zubat.width  &&
+      pikachu.y + pikachu.height> zubat.y                &&
+      pikachu.y                 < zubat.y + zubat.height
     ){
       startBattle()
       console.log('---Battle started from detectEncounter---')
@@ -205,10 +206,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Start battle
   function startBattle(){
 
-    // At the top:
-    // const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'
-
-    // fetch(https://pokeapi.co/api/v2/pokemon/?limit=898')
+    // const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'//URL for API
     fetch(fetchURL+searchBox.value)
       .then(response => response.json())
       .then((jsonData) => {
@@ -221,12 +219,14 @@ document.addEventListener('DOMContentLoaded',()=>{
         const enemyImg = document.getElementById('enemyImg')
         enemyImg.src = imgSrc
 
-
+        // The whole fetch could probably be inside this if stmnt
+        if(!battlePhase){viewChange()}
         battlePhase = true
-        viewChange()
+
         eHealthBar.value = 100
         turnDescription.innerText = searchBox.value+' appeared!'
         pikaTurn = true
+        // Initialize CSS for battle start (Pikachu's turn)
         pOptions.classList.add('border')
         eOptions.classList.remove('border')
         pressEnter.style.display = 'none'
@@ -241,10 +241,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   // End battle
   function endBattle(){
+    viewChange()
     battlePhase = false
     winNumber++
     winCounter.innerText = winNumber
-    viewChange()
     // If Random is the selected radio, pick a new Pokemon at random
     if (choseRandom.checked){
       searchBox.value = arrsPokeNames[Math.floor(Math.random()*nPokemonAvailable)]
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         eAAttack.classList.remove('selected')
         ePressEnter.innerText = '(Press Enter to Heal)'
       } else if(event.key==='Enter' &&
-      // It wasn't this messy before Thursday....
+      // If they hit Enter and have a selection made...
       (((attackSelected || healSelected) && pikaTurn)
       || ((eAttackSelected || eHealSelected) && !pikaTurn))){
         switch(pikaTurn){
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
                 if(eHealthBar.value<=0){
                   turnDescription.innerText = searchBox.value+" ran out of health..."
-                  battlePhase = false
+                  // battlePhase = false   DINO
                   setTimeout(endBattle,1500)
                 } else {
                   turnIndicator.innerText = searchBox.value+"'s turn"
@@ -310,9 +310,12 @@ document.addEventListener('DOMContentLoaded',()=>{
             }
             pressEnter.style.display = 'none'
             ePressEnter.style.display = 'block'
-            // get checkbox value for AI Mode
-            aIOn = document.getElementById('aIMode').checked
-            if(aIOn){setTimeout(startAITurn,1500)}
+            // If player didn't win battle...
+            if(eHealthBar.value>0){
+              // get checkbox value for AI Mode
+              aIOn = document.getElementById('aIMode').checked
+              if(aIOn){setTimeout(startAITurn,1500)}
+            }
             break
           case false:  // Enemy's turn
             if(eAttackSelected){// They have Attack selected and hit enter
@@ -400,13 +403,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   const zubats = []
   for(let i=0; i<20; i++){
     let zubat = new Block(
-      Math.random()*190+50,//X
-      Math.random()*110+15,//Y
+      Math.floor(Math.random()*19)*10+50,//X
+      Math.floor(Math.random()*12)*10+10,//Y
       'purple',10,10)
     zubats.push(zubat)
   }
   // Field of tall grass where pokemon might be lurking
-  const tallGrass = new Block(50,15,'green',200,120)
+  const tallGrass = new Block(50,10,'green',200,130)
   // character for walking around canvas. Only thing that moves
   const pikachu = new Block(10, 10, '#bada55', 10, 10)
   // PokeCenter for healing character (drawn with 3x3 'Bricks')
