@@ -1,8 +1,8 @@
-# Pokemon Fenton Region
+# PokeClone
 
 This will be a open world game similar to Pokemon.
 
-Live Link: [PokeClone Fenton Region](https://mgkdn9.github.io/Pokemon-Fenton-Region/)
+Live Link: [PokeClone](https://mgkdn9.github.io/PokeClone/)
 
 ### Tech stack (Javascript, CSS, HTML)
 
