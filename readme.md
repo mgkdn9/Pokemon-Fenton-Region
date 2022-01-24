@@ -45,5 +45,6 @@ Live Link: [PokeClone Fenton Region](https://mgkdn9.github.io/Pokemon-Fenton-Reg
 ### Make health go down slowly ("S-shaped") with vanishing red rectangle
 ### Figure out why have to make Change View btn hidden and can't just be deleted when needed
 ### Make modes where enemies move / chase after you
+### Make Gary encounter always startBattle()
 
 ### Changed 'Render...' to unchecked and playerAttackStat back to 40
