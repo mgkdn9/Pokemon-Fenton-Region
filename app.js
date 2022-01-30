@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // immediately fetch for array of Pokemon names
   function getPokeNames(){
     // URL for Poke API
-    const fetchURL = 'http://pokeapi.co/api/v2/pokemon/?limit='+nPokemonAvailable
+    const fetchURL = '//pokeapi.co/api/v2/pokemon/?limit='+nPokemonAvailable
     fetch(fetchURL)
     .then(response => response.json())
     .then((jsonData) => {
