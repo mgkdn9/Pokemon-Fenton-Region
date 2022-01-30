@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
   // -------------------------------------- VARIABLES --------------------------------------
-  const fetchURL = 'http://pokeapi.co/api/v2/pokemon/'//URL for API
+  const fetchURL = 'https://pokeapi.co/api/v2/pokemon/'//URL for API
   const arrsPokeNames = []// array for holding all Pokemon names
   const nPokemonAvailable = 898//Number of Pokemon to get from API
   const ctx = canvas.getContext('2d')//2Dimensional roaming area for player/enemies
