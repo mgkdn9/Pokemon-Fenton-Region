@@ -63,30 +63,36 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // move player around PlayerMovementArea
   function movementHandler(event){
-    if(!battlePhase){
-      switch (event.key.toLowerCase()) {
-        case'w': // W key
+    if(battlePhase){
+      if(event.keyCode==38 || event.keyCode==40)
+        event.preventDefault()
+    } else {
+      // switch (event.key.toLowerCase()) {
+      switch (event.keyCode) {
+        case 38: // UP key
+          event.preventDefault()//prevent screen from scrolling from pressing arrows
           if(pikachu.y <= 10){
             pikachu.y = 0   //don't go past boundary
           } else {
             pikachu.y -= 10 //move up 10
           }
           break
-        case'a': // A key
+        case 37: // LEFT key
           if(pikachu.x <= 10){
             pikachu.x = 0   //don't go past boundary
           } else {
             pikachu.x -= 10 //move left 10
           }
           break
-        case's': // S key
+        case 40: // DOWN key
+          event.preventDefault()//prevent screen from scrolling from pressing arrows
           if(pikachu.y >= 130){
             pikachu.y = 140 //don't go past boundary
           } else {
             pikachu.y += 10 //move down 10
           }
           break
-        case'd': // D key
+        case 39: // RIGHT key
           if(pikachu.x >= 280){
             pikachu.x = 290 //don't go past boundary
           } else {
